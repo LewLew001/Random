@@ -117,10 +117,11 @@ If you want to encrypt the entire row:
 
 ---
 ## 🧩 What Happens If You Lose the Server?
+
 If you physically lose the server but still have:
-• 	✅ The database files (MDF/LDF or backup)
-• 	✅ The symmetric key (stored in the database)
-• 	✅ The password used to encrypt the key
+- 	✅ The database files (MDF/LDF or backup)
+- 	✅ The symmetric key (stored in the database)
+- 	✅ The password used to encrypt the key
 Then yes — you can decrypt the data on another SQL Server instance.
 But if you lose the password or the master key, and you didn’t back it up, then the encrypted data is effectively lost. There’s no backdoor
 ---
