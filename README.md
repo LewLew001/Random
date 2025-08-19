@@ -1,4 +1,3 @@
-```markdown
 ## 🧠 Notes to Remember
 
 ### 🔐 Security & Sanitization
@@ -12,4 +11,4 @@ string tmp = Sanitizer.GetSafeHtmlFragment(TextBox1.Text);
 
 ### 🌐 API Gateway Reference
 - [API Gateway Setup Guide](https://server.hk/blog/14203/)
-```
+
