@@ -1,6 +1,6 @@
-# Easy Way to Encrypt/Decrypt Data in SQL Server 2012
+# Easy Way to Encrypt/Decrypt Data in SQL Server
 
-SQL Server 2012 supports symmetric key encryption, which is efficient and relatively easy to implement.
+SQL Server supports symmetric key encryption, which is efficient and relatively easy to implement.
 
 ---
 
@@ -51,7 +51,7 @@ CLOSE SYMMETRIC KEY SymKey_AES;
 
 ---
 
-## ⚠️ Limitations in SQL Server 2012
+## ⚠️ Limitations in SQL Server 
 
 - No built-in Always Encrypted (introduced in SQL Server 2016).
 - No Transparent Data Encryption (TDE) for column-level encryption.
