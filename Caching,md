@@ -161,3 +161,72 @@ app.Use(async (context, next) =>
 ---
 
 If you're building something sensitive or high-traffic, it's worth considering a hybrid approach—short-lived in-memory cache for speed, backed by a distributed cache for resilience.
+
+
+
+Great question, Edas! The `[ResponseCache]` attribute in ASP.NET Core is a bit misleading—it doesn’t actually store responses in memory. Instead, it sets HTTP headers that instruct **clients** (like browsers) and **intermediate proxies** (like CDNs or reverse proxies) to cache the response. So:
+
+> 🧠 **No memory is used on your server by `[ResponseCache]` itself.**
+
+---
+
+### 🔍 What `[ResponseCache]` Really Does
+
+Your attribute:
+```csharp
+[ResponseCache(Duration = 60, Location = ResponseCacheLocation.Any, NoStore = false)]
+```
+translates to:
+- `Cache-Control: public, max-age=60`
+- This tells clients and proxies: “You can cache this response for 60 seconds.”
+
+But ASP.NET Core **does not** store the response in server memory unless you explicitly use something like `IMemoryCache`, `IDistributedCache`, or a custom middleware.
+
+---
+
+### 🛡️ If You Want Server-Side Caching
+
+If your goal is to cache responses **on the server**, you’ll need to implement it manually using something like:
+
+```csharp
+services.AddMemoryCache();
+```
+
+Then in your controller or middleware:
+```csharp
+private readonly IMemoryCache _cache;
+
+public MyController(IMemoryCache cache)
+{
+    _cache = cache;
+}
+
+public IActionResult GetData()
+{
+    if (!_cache.TryGetValue("myKey", out var data))
+    {
+        data = GetExpensiveData();
+        _cache.Set("myKey", data, new MemoryCacheEntryOptions
+        {
+            AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(60),
+            Size = 1 // Optional: use this if you set a global size limit
+        });
+    }
+
+    return Ok(data);
+}
+```
+
+And to **limit memory usage**, configure it like this:
+```csharp
+services.AddMemoryCache(options =>
+{
+    options.SizeLimit = 1024 * 1024 * 100; // 100 MB
+});
+```
+
+---
+
+So in short: your current `[ResponseCache]` setup is safe from memory overload. But if you switch to server-side caching, then yes—you’ll want to set limits to avoid abuse or accidental memory bloat.
+
+Want help building a smart caching layer for your API? I can sketch out a strategy tailored to your endpoints.
